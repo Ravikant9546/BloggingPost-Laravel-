@@ -29,6 +29,10 @@ Route::get('/admin/dashboard', [CategoryController::class, 'dashboard']);
 // Categories
 Route::get('admin/category/{id}/delete',[CategoryController::class,'destroy']);
 Route::resource('admin/category',CategoryController::class);
+// Route::post('admin/category',[ CategoryController::class,'edit']);
+
+
+
 // POSTS
 Route::get('admin/post/{id}/delete', [PostController::class, 'destroy']);
 Route::resource('admin/post', PostController::class);

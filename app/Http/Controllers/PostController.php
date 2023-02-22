@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Post;
+use App\Repositories\Interfaces\PostIR;
+use App\Repositories\PostRepository;
 
 class PostController extends Controller
 {
+    private $PostRepository;
+    public function __construct(PostIR $PostRepository)
+    {
+        $this->PostRepository = $PostRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +22,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $data = Post::orderBy('id', 'desc')->paginate(4);
+        $data = $this->PostRepository->all();
         return view('backend.post.index', ['data' => $data]);
     }
 

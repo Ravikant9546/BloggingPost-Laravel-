@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Post;
+use App\Repositories\Interfaces\CategoryIR;
+use App\Repositories\CategoryRepository;
 
 class CategoryController extends Controller
 {
+    private $CategoryRepository;
+ public function __construct(CategoryIR $CategoryRepository)
+ {
+    $this->CategoryRepository = $CategoryRepository;
+ }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +24,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data=Category::orderBy('id','asc')->paginate(4);
-        return view('backend.category.index',['data'=>$data]);
+        $data = $this->CategoryRepository->all();
+        return view('backend.category.index', compact('data'));
     }
 
     /**
@@ -37,7 +46,8 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data1 = $request ->all();
+        $data=$request->validate([
             'title'=>'required'
         ]);
         if($request->hasFile('cat_image')){
@@ -46,11 +56,8 @@ class CategoryController extends Controller
             $dest=public_path('/imgs');
             $image->move($dest,$reImage);
         }
-        $category=new category;
-        $category->title=$request->title;
-        $category->detail=$request->detail;
-        $category->image=$reImage;
-        $category->save();
+        $data1['image']= $reImage;
+       $this->CategoryRepository->store($data1);
         return redirect('admin/category/create')->with('success','Data is Successfully Added');
     }
 
@@ -73,7 +80,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $data = Category::find($id);
+        $data = $this->CategoryRepository->edit($id);
         return view('backend.category.update',['data'=>$data]);
     }
 
@@ -92,6 +99,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        $data =$request->all();
         $request->validate([
             'title'=>'required'
         ]);
@@ -104,13 +112,9 @@ class CategoryController extends Controller
         }else{
             $reImage=$request->cat_image;
         }
-
-        $category=Category::find($id);
-        $category->title=$request->title;
-        $category->detail=$request->detail;
-        $category->image=$reImage;
-        $category->save();
-
+        $data['image'] = $reImage;
+           
+        $this->CategoryRepository->update($data, $id);
         return redirect('admin/category/'.$id.'/edit')->with('success','Data has been added');
     }
 
@@ -130,7 +134,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::where('id',$id)->delete();
+        $this->CategoryRepository->destroy($id);
         return redirect('admin/category');
     }
 }

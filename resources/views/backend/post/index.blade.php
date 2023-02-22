@@ -42,7 +42,7 @@
                         @foreach($data as $post)
                         <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td>{{$post->category->title}}</td>
+                            <td>{{$post->Category->title}}</td>
                             <td>{{$post->title}}</td>
                             <td>{{$post->detail}}</td>
                             <td><img src="{{asset('imgs').'/'.$post->thumb}}" width="100" /></td>

@@ -38,6 +38,7 @@
                         <tr>
                             <th>Image</th>
                             <td>
+                                
                                 <p class="my-2"><img width="80" src="{{asset('imgs')}}/{{$data->image}}" /></p>
                                 <input type="hidden" value="{{$data->image}}" name="cat_image" />
                                 <input type="file" name="cat_image" />
